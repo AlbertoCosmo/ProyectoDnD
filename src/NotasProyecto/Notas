@@ -1,0 +1,52 @@
+OBJETOS => getClassName
+Objeto -> TIENE -> atributos
+SABER -> el tipo de atributo que es cada uno 
+Metadata, asociating mapping
+
+
+CRUDController.php
+//route/CRUD/{CLASSNAME}/list
+
+3 Funciones
+
+list() {
+       $objetos= $em (getRepository($className));
+        if ($hayFiltro) {
+
+        }
+
+        render (list.html.twig, $objetos)
+ }
+
+
+
+editar($objeto => (className, id), campo, valor){
+    $objeto -> findById(X)->where la clase es className
+    $objeto->set{{campo}}(valor);
+    $em->flush;
+}
+ 
+borrar($objeto=>(classanme, id), campo){
+
+}
+
+
+
+-- VISTAS --
+
+list.html.twig:
+    foreach objetos as objetos
+        tr objeto
+            for obj.atr as atr
+            obj.atr
+            {{bloque FILTRO}}
+
+
+edit.html.twig:
+    objeto
+    foreach atr as atributo
+        aqui editas cada atributo
+
+borrar.html.twig:
+    objeto
+    borrar objeto

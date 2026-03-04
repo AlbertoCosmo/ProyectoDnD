@@ -1,0 +1,45 @@
+<div class="cajaTabla">
+    <div class="utilesTabla">
+        <div class="accionesIzquierdaTabla">
+            {% block top_extra %}{% endblock %}
+        </div>
+        <div class="accionesDerechaTabla">
+            {% block buscador_tabla %}
+            <div class=" filtroTabla">
+                <span class="lupaFiltro">🔍</span>
+                <input id="busquedaTabla" type="text" class="busquedaTabla" placeholder="Buscar..." autocomplete="off">
+            </div>
+            {% endblock %}
+            {% block botones_vistas_tabla %}{% endblock %}
+        </div>
+    </div>
+    <div id="vistaTabla">
+        <table>
+            <caption class="tablaTitulo">
+                {% block tabla_titulo %}Título Placeholder{% endblock %}
+            </caption>
+            <thead>
+                <tr>
+                    {% block tabla_cabecera %}{% endblock %}
+                    <th style="width: 5%;">EDITAR</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for objeto in datos %}
+                <tr>
+                    {% block tabla_filas %}{% endblock %}
+                    <td>
+                        <a href="#" class="btnMod" data-id="{{ objeto.id }}" title="Editar">
+                            ✎
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="vistaMosaico" style="display: none;">
+        {% block vista_mosaico %}{% endblock %}
+    </div>
+    {% block bot_extra %}{% endblock %}
+</div>

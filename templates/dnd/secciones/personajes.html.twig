@@ -1,0 +1,41 @@
+{% extends 'dnd/plantillas/plantillaTablas.html.twig' %}
+{% import 'macros/verMosaicoTablas.html.twig' as m %}
+{% import "macros/ordenarTablas.html.twig" as t %}
+
+{% block botones_vistas_tabla %}
+    {{ include("dnd/plantillas/_botonesVistaTablas.html.twig") }}
+{% endblock %}
+
+{% block tabla_titulo %}LISTADO DE PERSONAJES{% endblock %}
+
+{% block tabla_cabecera %}
+{{ t.ordenar('id', 'ID', sort, direction, '5%') }}
+{{ t.ordenar('Jugador.Nombre', 'JUGADOR', sort, direction, '15%') }}
+{{ t.ordenar('nombre', 'NOMBRE', sort, direction, '15%') }}
+{{ t.ordenar('Raza.Nombre', 'RAZA', sort, direction, '15%') }}
+{{ t.ordenar('Clase.Nombre', 'CLASE', sort, direction, '15%') }}
+{{ t.ordenar('Edad', 'EDAD', sort, direction) }}
+{{ t.ordenar('Genero', 'GENERO', sort, direction) }}
+{{ t.ordenar('Lugar.Nombre', 'LUGAR', sort, direction, '15%') }}
+{{ t.ordenar('Vivo', '¿VIVO?', sort, direction) }}
+{% endblock %}
+
+{% block tabla_filas %}
+    <td>{{ objeto.id }}</td>
+    <td>{{ objeto.jugador.nombre }}</td>
+    <td>{{ objeto.nombre }}</td>
+    <td>{{ objeto.raza.nombre }}</td>
+    <td>{{ objeto.clase.nombre }}</td>
+    <td>{{ objeto.edad }}</td>
+    <td>{{ objeto.genero }}</td>
+    <td>{{ objeto.lugar ? objeto.lugar.nombre : 'Desconocido'}}</td>
+    <td>{% if objeto.vivo %} Si {% else %} No {% endif %}</td>
+{% endblock %}
+
+{% block vista_mosaico %}
+<div class="gridMosaico">
+    {% for p in personajes %}
+        {{ m.generarMosaico(p.nombre, p.token, 'personajes', p.raza.nombre ~ ' - ' ~ p.clase.nombre ~ ' (' ~ p.jugador.nombre ~ ')')}}
+    {% endfor %}
+</div>
+{% endblock %}

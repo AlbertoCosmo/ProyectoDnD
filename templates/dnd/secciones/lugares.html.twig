@@ -1,0 +1,17 @@
+{% extends 'dnd/plantillas/plantillaTablas2.html.twig' %}
+{% import 'macros/verMosaicoTablas.html.twig' as m %}
+{% import "macros/ordenarTablas.html.twig" as t %}
+
+{% block botones_vistas_tabla %}
+{{ include("dnd/plantillas/_botonesVistaTablas.html.twig") }}
+{% endblock %}
+
+{% block tabla_titulo %}LISTADO DE LUGARES{% endblock %}
+
+{% block vista_mosaico %}
+<div class="gridMosaico">
+    {% for l in lugares %}
+    {{ m.generarMosaico(l.nombre, l.imagen, 'lugares', l.descripcion)}}
+    {% endfor %}
+</div>
+{% endblock %}

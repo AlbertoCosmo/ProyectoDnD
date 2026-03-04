@@ -1,0 +1,53 @@
+{% extends 'dnd/plantillas/plantillaTablas.html.twig' %}
+{% import 'macros/verMosaicoTablas.html.twig' as m %}
+{% import "macros/ordenarTablas.html.twig" as t %}
+
+{% block top_extra %}
+<button id="btnCrearNpc" type="button" class="btnCrearNpc"
+    onclick="document.getElementById('crearNpc').style.display='block'">Nuevo NPC</button>
+<div id="crearNpc" class="nuevoNpc" style="display: none;">
+    <div class="contenidoNuevoNpc">
+        {{ include('dnd/plantillas/crearNpc.html.twig') }}
+    </div>
+</div>
+{% endblock %}
+
+{% block botones_vistas_tabla %}
+{{ include("dnd/plantillas/_botonesVistaTablas.html.twig") }}
+{% endblock %}
+
+{% block tabla_titulo %}LISTADO DE NPCS{% endblock %}
+
+{% block tabla_cabecera %}
+{{ t.ordenar('id', 'ID', sort, direction, '5%') }}
+{{ t.ordenar('Nombre', 'NOMBRE', sort, direction) }}
+{{ t.ordenar('Raza.Nombre', 'RAZA', sort, direction) }}
+{{ t.ordenar('Clase.Nombre', 'CLASE', sort, direction) }}
+{{ t.ordenar('Edad', 'EDAD', sort, direction, '8%') }}
+{{ t.ordenar('Genero', 'GENERO', sort, direction) }}
+{{ t.ordenar('Lugar.Nombre', 'LUGAR', sort, direction) }}
+{{ t.ordenar('Vivo', '¿VIVO?', sort, direction) }}
+{{ t.ordenar('Comerciante', '¿TIENDA?', sort, direction) }}
+{{ t.ordenar('Amistoso', '¿AMISTOSO?', sort, direction) }}
+{% endblock %}
+
+{% block tabla_filas %}
+    <td>{{ objeto.id }}</td>
+    <td>{{ objeto.nombre }}</td>
+    <td>{{ objeto.raza.nombre }}</td>
+    <td>{{ objeto.clase.nombre }}</td>
+    <td>{{ objeto.edad }}</td>
+    <td>{{ objeto.genero }}</td>
+    <td>{{ objeto.lugar ? objeto.lugar.nombre : 'Desconocido'}}</td>
+    <td>{% if objeto.vivo %} Si {% else %} No {% endif %}</td>
+    <td>{% if objeto.comerciante %} Si {% else %} No {% endif %}</td>
+    <td>{% if objeto.amistoso %} Si {% else %} No {% endif %}</td>
+{% endblock %}
+
+{% block vista_mosaico %}
+<div class="gridMosaico">
+    {% for n in npcs %}
+    {{ m.generarMosaico(n.nombre, n.token, 'npcs', n.raza.nombre ~ ' - ' ~ n.clase.nombre)}}
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% macro generarMosaico(nombre, imagen, carpeta, subtitulo) %}
+
+{% set mostrarImagen = imagen ? imagen : 'Default.png' %}
+
+<div id="mosaicoTokens" class="token">
+    <img src="{{ asset('images/'~ carpeta ~'/tokens/' ~ mostrarImagen) }}" alt="{{ nombre }}">
+    <div class="infoToken">
+        <span class="infoToken1">{{ nombre }}</span>
+        <small class="infoToken2">{{ subtitulo }}</small>
+    </div>
+</div>
+{% endmacro %}

@@ -1,0 +1,20 @@
+<h1 class="h1Portada">LISTADO DE INFORMACIÓN</h1>
+<h2 class="h2Portada">Elige una sección para listar toda la información al respecto:</h2>
+<div class="espacioPortada">
+    <div class="bannerIzq"></div>
+    <div class="bannerMid">
+        <div class="selectorPortada">
+            <select id="selectorListar" name="listarSelect" class="listarSelect">
+                <option disabled selected>Elige que información listar</option>
+                <option value="jugador">Jugadores</option>
+                <option value="capitulos">Capítulos</option>
+                <option value="lugares">Lugares</option>
+                <option value="clase">Clases</option>
+                <option value="raza">Razas</option>
+            </select>
+            <a href="{{ path('volver') }}" class="btnPortada">Volver</a>
+        </div>
+        <div id="contenedorTablaListar" style="margin-top: 30px; width: 100%;"></div>
+    </div>
+    <div class="bannerDer"></div>
+</div>

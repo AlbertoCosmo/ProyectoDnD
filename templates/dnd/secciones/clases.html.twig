@@ -1,0 +1,47 @@
+{% extends 'dnd/plantillas/plantillaTablas.html.twig' %}
+{% import 'macros/verMosaicoTablas.html.twig' as m %}
+{% import "macros/ordenarTablas.html.twig" as t %}
+
+{% block botones_vistas_tabla %}
+{{ include("dnd/plantillas/_botonesVistaTablas.html.twig") }}
+{% endblock %}
+
+{% block tabla_titulo %}LISTADO DE CLASES{% endblock %}
+
+{% block tabla_cabecera %}
+{{ t.ordenar('id', 'ID', sort, direction, '5%') }}
+{{ t.ordenar('Nombre', 'CLASE', sort, direction, 'auto') }}
+{{ t.ordenar('Lvl1', 'Lvl 1', sort, direction, '8%') }}
+{{ t.ordenar('Lvl2', 'Lvl 2', sort, direction, '8%') }}
+{{ t.ordenar('Lvl3', 'Lvl 3', sort, direction, '8%') }}
+{{ t.ordenar('Lvl4', 'Lvl 4', sort, direction, '8%') }}
+{{ t.ordenar('Lvl5', 'Lvl 5', sort, direction, '8%') }}
+{{ t.ordenar('Lvl6', 'Lvl 6', sort, direction, '8%') }}
+{{ t.ordenar('Lvl7', 'Lvl 7', sort, direction, '8%') }}
+{{ t.ordenar('Lvl8', 'Lvl 8', sort, direction, '8%') }}
+{{ t.ordenar('Lvl9', 'Lvl 9', sort, direction, '8%') }}
+{{ t.ordenar('Lvl10', 'Lvl 10', sort, direction, '10%') }}
+{% endblock %}
+
+{% block tabla_filas %}
+    <td>{{ objeto.id }}</td>
+    <td>{{ objeto.nombre }}</td>
+    <td>{{ objeto.lvl1 }}</td>
+    <td>{{ objeto.lvl2 }}</td>
+    <td>{{ objeto.lvl3 }}</td>
+    <td>{{ objeto.lvl4 }}</td>
+    <td>{{ objeto.lvl5 }}</td>
+    <td>{{ objeto.lvl6 }}</td>
+    <td>{{ objeto.lvl7 }}</td>
+    <td>{{ objeto.lvl8 }}</td>
+    <td>{{ objeto.lvl9 }}</td>
+    <td>{{ objeto.lvl10 }}</td>
+{% endblock %}
+
+{% block vista_mosaico %}
+<div class="gridMosaico">
+    {% for c in clases %}
+        {{ m.generarMosaico(c.nombre, c.token, 'clases')}}
+    {% endfor %}
+</div>
+{% endblock %}

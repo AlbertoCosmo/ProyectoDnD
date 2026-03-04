@@ -1,0 +1,24 @@
+{# FORMULARIO PARA CREAR NUEVO NPC #}
+<h2 class="tituloNuevoNpc">Rellena los datos del NPC:</h2>
+{{ form_start(form) }}
+<div class="formularioNpcGrid">
+    {{ form_row(form.nombre) }}
+    {{ form_row(form.edad) }}
+    <div class="formularioNpcSelects">
+        {{ form_row(form.raza) }}
+        {{ form_row(form.clase) }}
+        {{ form_row(form.lugar) }}
+    </div>
+    <div class="formularioNpcRadios">
+        {{ form_row(form.genero) }}
+        {{ form_row(form.vivo) }}
+        {{ form_row(form.comerciante) }}
+        {{ form_row(form.amistoso) }}
+    </div>
+    {{ form_row(form.descripcion) }}
+</div>
+<div class="formularioNpcAcciones">
+    <button type="submit" class="btnCrearNpc2" id="btnCrearNpc2">Guardar NPC</button>
+    <button type="button" class="btnCancelarNpc" id="btnCancelarNpc" onclick="document.getElementById('nuevoNpc').style.display='none'">Cancelar</button>
+</div>
+{{ form_end(form) }}

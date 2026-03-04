@@ -1,0 +1,18 @@
+{# templates/macros/ordenarTablas.html.twig #}
+
+{% macro ordenar(columna, etiqueta, sortActual, dirActual, ancho = '') %}
+
+{% set nuevaDir = (sortActual == columna and dirActual == 'ASC') ? 'DESC' : 'ASC' %}
+{% set rutaActual = app.request.attributes.get('_route') %}
+<th {% if ancho %}style="width:{{ ancho }};"{% endif %}>
+    <a href="{{ path(rutaActual, {
+            'sort' : columna,
+            'direction' : nuevaDir
+        }) }}" class="ordenarTituloTablas">
+        {{ etiqueta }}
+        {% if sortActual == columna %}
+        <span class="flechaOrden">{{ dirActual == 'ASC' ? '▲' : '▼' }}</span>
+        {% endif %}
+    </a>
+</th>
+{% endmacro %}

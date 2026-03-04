@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Partida DnD{% endblock %}
+
+{% block body %}
+<h1 class="titulo"><a href="{{ path('paginaBase') }}">BASE DE DATOS DE LA PARTIDA DE ROL</a></h1>
+<nav class="bannerNav">
+    <div class="bannerPortada"><a href="{{ path('paginaBase') }}"><img
+                src="{{ asset('images/dice.png') }}" class="masterIcon"></a></div>
+    <ul class="bannerMenu">
+        <li>
+            <a href="{{ path('paginaBase') }}">
+                INICIO
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('dnd_crud_listar',{'entidad': 'Jugador'}) }}">
+                JUGADORES
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('dnd_crud_listar',{'entidad':'Personaje'}) }}">
+            PERSONAJES
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('dnd_lore') }}">
+                LORE
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('dnd_crud_listar',{'entidad':'Capitulos'}) }}">
+                CAPITULOS
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('dnd_crud_listar',{'entidad':'Npc'}) }}">
+                NPC'S
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('dnd_crud_listar',{'entidad':'Lugares'}) }}">
+                LUGARES
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('dnd_crud_listar',{'entidad':'Clase'}) }}">
+                CLASES
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('dnd_crud_listar',{'entidad':'Raza'}) }}">
+                RAZAS
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('dnd_multimedia') }}">
+                MULTIMEDIA
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<main class="contenidoPrincipal">
+    {# Cargamos el archivo que vamos a mostrar y recargar mediante AJAX (Por defecto cargamos la portada) #}
+    {% if seccion_actual is defined %}
+        {% include seccion_actual %}
+    {% else %}
+        {{ render(path('dnd_portada')) }}
+    {% endif %}
+</main>
+{% endblock %}
+{% block footer %}
+<footer></footer>
+{% endblock %}

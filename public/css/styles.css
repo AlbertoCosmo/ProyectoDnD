@@ -1,0 +1,465 @@
+body{
+    background-color: #b4a073;
+    background-image: url('images/fondo.png');
+    font-family: 'Georgia', serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    width: 100%;
+}
+.masterIcon{
+    position: relative;
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+}
+.masterIcon img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+/* ETIQUETAS DEL TITULO*/
+.titulo {
+    color: #ffcf4d;
+    font-size: 320%;
+    text-align: center;
+}
+.titulo a{
+    text-decoration: none !important;
+    color: #ffcf4d;
+    text-shadow: 3px 3px 2px black;
+}
+.titulo a:visited{
+    color: inherit;
+}
+
+/* ETIQUETAS DEL BANNER MENU */
+.bannerNav{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffcf4d;
+    padding: 1%;
+    border-bottom: 3px solid #583d0b;
+    border-top: 3px solid #583d0b;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+.bannerMenu{
+    display: flex;
+    list-style: none;
+    gap: 30px;
+    margin: 0 auto;
+    padding: 0;
+    padding-inline-start: 0;
+}
+.bannerMenu a{
+    text-decoration: none;
+    color: #583d0b;
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: 0.3s;
+    padding: 5px 10px;
+}
+.bannerMenu a:hover, .bannerMenu a.active{
+    color: #000000;
+    background: #b37e1b;
+    border-radius: 5px;
+}
+
+/* TABLAS GENERICAS */
+table{
+    width: 100% !important;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+th{
+    background-color: #ffcf4d;
+    color: #4e342e;
+    padding: 12px;
+    text-align: center;
+    border-bottom: solid #000 1px;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+}
+td{
+    padding:10px;
+    border-bottom: 1px solid #d2b48c;
+    text-align: center;
+    text-overflow: ellipsis;
+    word-break: break-word; 
+    white-space: normal; 
+    overflow: hidden;
+}
+.tablaTitulo{
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    background-color: #ffcf4d;
+    padding: 10px;
+    color: #4e342e;
+    border: solid black 1px;
+    border-top: #000 solid 2px;
+}
+
+/* PORTADA */
+.h1Portada {
+    text-align: center;
+    color: #ffcf4d;
+    text-shadow: 2px 2px 4px #000;
+    margin-top: 40px;
+}
+.h2Portada {
+    text-align: center;
+    color: #583d0b;
+    font-size: 1.1rem;
+    max-width: 60%; /* Limitamos el ancho del texto para que no choque con los laterales */
+    margin: 10px auto 30px auto;
+}
+.espacioPortada {
+    width: 70%;
+    min-height: 50vh; 
+    margin: 0 auto; 
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; 
+}
+.cajaBotonesPortada {
+    flex: 1; 
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+    border-left: 1px solid rgba(88, 61, 11, 0.3);
+    border-right: 1px solid rgba(88, 61, 11, 0.3);
+}
+.btnPortada{
+    background-color: #ffcf4d;
+    color: #583d0b;
+    border: 2px solid #583d0b;
+    padding: 15px 40px;
+    font-family: 'Georgia', serif;
+    font-weight: bold;
+    font-size: 1.2rem;
+    cursor: crosshair;
+    transition: 0.3s ease;
+    border-radius: 4px;
+    text-decoration: none;
+}
+.cajaBotonesPortada button {
+    background-color: #ffcf4d;
+    color: #583d0b;
+    border: 2px solid #583d0b;
+    padding: 15px 40px;
+    font-family: 'Georgia', serif;
+    font-weight: bold;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: 0.3s ease;
+    border-radius: 4px;
+}
+.cajaBotonesPortada button:hover {
+    background-color: #583d0b;
+    color: #ffcf4d;
+    transform: translateY(-3px);
+}
+.bannerIzq, .bannerDer {
+    width: 15%; 
+    height: 100%;
+    background-color: rgba(0,0,0,0.55); 
+}
+.bannerMid {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 10px;
+}
+
+.selectorPortada {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 15px 30px;
+    /* Quitamos el margen automático que pudiera estar centrando el div verticalmente */
+    margin-top: 0; 
+}
+/* --- ESTILO DEL SELECTOR (D&D STYLE) --- */
+.listarSelect {
+    background-color: #ffcf4d;
+    color: #583d0b;
+    border: 2px solid #583d0b;
+    padding: 10px 15px;
+    font-family: 'Georgia', serif;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    outline: none;
+    min-width: 250px;
+}
+.listarSelect:hover {
+    background-color: #f0c040;
+}
+
+
+/* RESUMEN CAPITULOS */
+.loreCompleto{
+    margin-left: 1%;
+}
+.loreCompleto h3{
+    color: black;
+    text-shadow: #ffcf4d 2px 2px 4px;
+    border-bottom: #ffcf4d solid 1px;
+    width: 15%;
+    text-align: center;
+}
+.resumen {
+    display:block;
+    text-align: left;
+    font-family: 'Georgia';
+    font-variant: small-caps;
+    width: 70%;
+    margin: 40px auto;
+    padding: 20px 25px;
+    border-left: 2px solid#201307;
+    border-right: 2px solid #201307;
+}
+.names a,
+.names a:visited {
+    color: inherit !important;
+    text-decoration: none !important;
+    outline: none !important;
+    text-shadow: 1px 1px #afafaf;
+    font-weight: bold;
+    font-style: italic;
+}
+
+/* VISTA TABLAS (TABLA - MOSAICO) */
+.utilesTabla{
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch; /* Iguala alturas de izquierda y derecha */
+    margin-bottom: -1px;  /* Solapa con la tabla */
+}
+.accionesIzquierdaTabla{
+    display: flex;
+    align-items: stretch;
+}
+.accionesDerechaTabla{
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+}
+.filtroTabla{
+    background-color: white;
+    position: relative;
+    display: flex;
+    align-items: center;
+    transition: border-color 0.3s;
+    border: solid #000 1px;
+    border-bottom: none;
+    padding: 0 10px;
+}
+.filtroTabla input{
+    border: none;
+    padding: 8px 5px;
+    outline: none;
+    width: 200px;
+    background: transparent;
+}
+.botonesVistasTabla{
+   display: flex; 
+   gap: 0;
+   padding: 0;
+   margin: 0;
+}
+.btnToggleVistas{
+    background-color: #ffcf4d; 
+    color: #000;
+    border: 1px solid #000;
+    border-bottom: none;
+    padding: 0 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+}
+.btnToggleVistas.active {
+    background-color: #000;
+    color: #ffcf4d;
+    box-shadow: inset 0 2px 4px rgba(255, 196, 0, 0.445);
+}
+.btnToggleVistas:hover:not(.active) {
+    background-color: #b37e1b;
+}
+.tituloMosaico{
+    color: #ffcf4d;
+    text-shadow: #000000 3px 3px 5px;
+    border-bottom: #ffcf4d solid 3px;
+    padding-bottom: 0.5%;
+    text-align: center;
+    width: 100%;
+    margin-top: 0;
+}
+.gridMosaico{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+    padding: 20px 15px;
+    justify-items: center;
+}
+.token{
+    position: relative;
+    height: 150px;
+    width: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    border: #ffcf4d solid;
+}
+.token img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+.infoToken{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.5);
+    color: #ffcf4d;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    padding: 15px;
+}
+.token:hover img{
+    transform: scale(1.1);
+}
+.token:hover .infoToken{
+    opacity: 1;
+}
+
+
+/* FORMULARIO PARA NUEVO NPC */
+.btnCrearNpc{
+    display: flex;
+    align-items: center;
+    background-color: #ffcf4d;
+    border: #000000 solid 2px;
+    border-bottom: none;
+    padding: 0 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    white-space: nowrap;
+    cursor: crosshair;
+    transition: 0.3s;
+}
+.btnCrearNpc:hover{
+    color: #000000;
+    background: #b37e1b;
+}
+.nuevoNpc{
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+.contenidoNuevoNpc{
+    background-color: #b4a073;
+    margin: 5% auto;
+    padding: 25px;
+    border-radius: 10px;
+    width: 75%;
+    max-height: 85vh;
+    overflow-y: auto; 
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    border: solid 2px #ffcf4d;
+}
+.formularioNpcRadios div{
+    display: inline-block;
+    margin-right: 15px;
+}
+.tituloNuevoNpc{
+    text-align: center;
+    color: #ffcf4d;
+    text-shadow:#000000 2px 2px 6px;
+    border-bottom: #ffcf4d solid 1px;
+    padding-bottom: 0.8%;
+    margin-top: 0;
+}
+.formularioNpcAcciones{
+    margin-top: 1%;
+    padding-top: 1%;
+    border-top: 1px solid #ffcf4d;
+    display: flex;
+    justify-content: center;
+    gap: 10%;
+}
+.btnCrearNpc2{
+    padding: 10px 20px;
+    background-color: #ffcf4d;
+    border: #000000 solid 2px;
+    border-radius: 5px;
+    font-size: large;
+    font-weight: bold;
+    cursor: pointer;
+}
+.btnCrearNpc2:hover{
+    background: #b37e1b;
+}
+.btnCancelarNpc{
+    padding: 10px 20px;
+    background-color: #776138;
+    border: #000000 solid 2px;
+    border-radius: 5px;
+    font-size: large;
+    font-weight: bold;
+    cursor: pointer;
+}
+.btnCancelarNpc:hover{
+    background: #b37e1b;
+}
+.btnMod {
+    cursor: crosshair;
+    color: #201307;
+    text-decoration: none;
+}
+.btnMod:visited {
+    color: #201307;
+    text-decoration: none;
+}
+.btnGuardarMod{
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid #583d0b;
+    font-family: 'Georgia', serif;
+    padding: 4px;
+    border-radius: 3px;
+    color: #000;
+}
+.ordenarTituloTablas{
+    text-decoration: none;
+    color: #4e342e;
+}
