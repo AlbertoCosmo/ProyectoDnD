@@ -28,6 +28,7 @@
                 </tr>
             </thead>
             <tbody>
+                {% for objeto in datos %}
                 {% for a in atributos %}
                 <td data-tipo="{{ a.tipo }}" data-campo="{{ a.attr }}">
                     {% set valor = attribute(objeto, a.attr) %}
@@ -38,6 +39,12 @@
                     {% else %} {# SI NO, SEGUIMOS CON LO DE SIEMPRE #}
                     {{ valor|default('---') }}
                     {% endif %}
+                </td>
+                {% endfor %}
+                <td>
+                    <a href="#" class="btnMod" data-id="{{ objeto.id }}" title="Editar">
+                        ✎
+                    </a>
                 </td>
                 {% endfor %}
             </tbody>
