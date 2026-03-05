@@ -27,7 +27,7 @@ final class crudController extends AbstractController
     public function listarEntidad(string $entidad, Request $request): Response{
         $clase = "App\\Entity\\".$entidad;
         $metodos = get_class_methods($clase);
-        $atributos = [];
+        $arrayAtributos = [];
 
         foreach($metodos as $m){
             if(str_starts_with($m, 'get') && $m !== 'getId'){
@@ -35,7 +35,7 @@ final class crudController extends AbstractController
 
                 //FILTRO TEMPORAL PARA ANIDADAS
                 $relInversas = ['personajes', 'npcs', 'jugadores', 'lugares', 'clases', 'razas', 'capitulos'];
-                if (in_array($campo, $relInversas)) continue;
+                if (in_array($atributo, $relInversas)) continue;
 
                 $espejo = new \ReflectionMethod($clase, $m);
                 $tipoRetorno = (string)$espejo->getReturnType();
@@ -47,9 +47,9 @@ final class crudController extends AbstractController
                 }
 
                 $arrayAtributos[] = [
-                    'attr' => $campo,
-                    'etiqueta' => strtoupper($campo),
-                    'tipo' => 'text'
+                    'attr' => $atributo,
+                    'etiqueta' => strtoupper($atributo),
+                    'tipo' => $tipoVisual
                 ];
             }
         }
@@ -67,9 +67,7 @@ final class crudController extends AbstractController
         $objeto = $this -> em -> getRepository($clase) -> find($id);
         $metodos = get_class_methods($clase);
 
-        if(!$objeto){
-            throw $this -> createNotFoundException("No hay registro")
-        }
+        if(!$objeto){throw $this -> createNotFoundException("No hay registro");}
         foreach ($metodos as $m){
             if(str_starts_with($m, 'get') && $m !== 'getId'){
                 $atributo = lcfirst(substr($m, 3));
@@ -80,7 +78,7 @@ final class crudController extends AbstractController
 
                 $espejo = new \ReflectionMethod($clase, $m);
                 $tipoRetorno = (string)$espejo->getReturnType();
+            }
         }
     }
-
 }
