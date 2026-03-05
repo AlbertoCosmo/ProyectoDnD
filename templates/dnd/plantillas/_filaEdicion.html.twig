@@ -1,0 +1,32 @@
+{# templates/dnd/plantillas/_filaEdicion.html.twig #}
+<tr data-id="{{ id }}">
+    {% for c in campos %}
+    <td>
+        {% if c.tipo == 'select' %}
+        <select name="{{ c.attr }}" class="editInput">
+            {% for opt in c.opciones %}
+            <option value="{{ opt.id }}" {{ (c.valor and opt.id==c.valor.id) ? 'selected' : '' }}>
+                {{ opt.nombre|default(opt.id) }}
+            </option>
+            {% endfor %}
+        </select>
+
+
+        {% elseif c.tipo == 'bool' %}
+        <select name="{{ c.attr }}" class="editInput">
+            <option value="1" {{ c.valor==1 ? 'selected' : '' }}>SÍ</option>
+            <option value="0" {{ c.valor==0 ? 'selected' : '' }}>NO</option>
+        </select>
+
+        {% else %}
+        <input type="text" name="{{ c.attr }}" value="{{ c.valor }}" class="editInput">
+        {% endif %}
+    </td>
+    {% endfor %}
+
+    <td>
+        {# Botones de acción para la edición #}
+        <button class="btnGuardar" data-id="{{ id }}" data-entidad="{{ entidad }}">💾</button>
+        <button onclick="cancelarEdicion()" class="btnCancelar">❌</button>
+    </td>
+</tr>

@@ -95,8 +95,5 @@ final class DndController extends AbstractController
         return $this -> render('dnd/secciones/multimedia.html.twig');
     }
 
-
-
-        
 }
 

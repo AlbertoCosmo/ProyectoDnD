@@ -38,19 +38,19 @@ $(document).on('click', '.bannerMenu a', function (e) {
 });
 
 // FILTRO DE BÚSQUEDA
-$(document).on('keyup', '#busquedaTabla', function(){
+$(document).on('keyup', '#busquedaTabla', function () {
     let valorBusqueda = $(this).val().toLowerCase();
-    
+
     //TABLA
-    $("#vistaTabla tbody tr").each(function(){
+    $("#vistaTabla tbody tr").each(function () {
         let fila = $(this);
         let textoFila = "";
         textoFila += $(this).text().toLowerCase() + " ";
         fila.toggle(textoFila.indexOf(valorBusqueda) > -1);
     });
-    
+
     //TOKENS
-    $("#vistaMosaico .token").each(function(){
+    $("#vistaMosaico .token").each(function () {
         let imagen = $(this);
         let textoImagen = imagen.text().toLowerCase();
         imagen.toggle(textoImagen.indexOf(valorBusqueda) > -1);
@@ -77,38 +77,8 @@ $(document).on('click', '#btnVistaMosaico', function () {
     $('#btnVistaTabla').removeClass('active');
 });
 
-// BOTON DE MODIFICAR DATOS TABLA
-$(document).on('click', function(e){
-    const btnEditar = e.target.closest('.btnMod');
-    if(btnEditar){
-        e.preventDefault();
-        const idEntidad = btnEditar.getAttribute('data-id');
-        abrirEdicion(idEntidad);
-    }
-});
-
-function abrirEdicion(id){
-    const btn = document.querySelector(`.btnMod[data-id="${id}"]`);
-    const fila = btn.closest('tr');
-    const celdas = fila.querySelectorAll('td');
-    for (let i = 1; i < celdas.length - 1; i++){
-        const valorActual = celdas[i].innerText.trim();
-        const ancho = celdas[i].offsetWidth;
-        celdas[i].innerHTML = `<input type="text" class="editTabla" value="${valorActual}" style="width: ${ancho - 20}px">`;
-    }
-    btn.innerHTML = '💾';
-    btn.classList.remove('btnMod');
-    btn.classList.add('btnGuardarMod');
-    btn.onclick = function() {guardarCambios(id); };
-}
-
-function guardarCambios(id){
-
-}
-
-
 //Listar (Usando fetch)
-document.addEventListener('change', function(e) {
+document.addEventListener('change', function (e) {
     if (e.target && e.target.id === 'selectorListar') {
         const clase = e.target.value;
         const url = `/dnd/listar/${clase}`;
@@ -116,15 +86,74 @@ document.addEventListener('change', function(e) {
         fetch(url, {
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
         })
-        .then(response => response.text())
-        .then(html => {
-            const contenedor = document.getElementById('contenedorTablaListar');
-            if (contenedor) {
-                contenedor.innerHTML = html;
-            }
-        })
-        .catch(error => console.error('Error en la carga:', error));
+            .then(response => response.text())
+            .then(html => {
+                const contenedor = document.getElementById('contenedorTablaListar');
+                if (contenedor) {
+                    contenedor.innerHTML = html;
+                }
+            })
+            .catch(error => console.error('Error en la carga:', error));
     }
 });
+
+// BOTON DE MODIFICAR DATOS TABLA
+$(document).on('click', '.btnMod', function (e) {
+    e.preventDefault();
+    const id = $(this).data('id');
+    const entidad = $(this).data('entidad');
+    abrirEdicion(id, entidad);
+});
+
+function abrirEdicion(id, entidad) {
+    const btn = document.querySelector(`.btnMod[data-id="${id}"]`);
+    const fila = btn.closest('tr');
+    const url = `/dnd/editar/${entidad}/${id}`;
+    console.log(id);
+
+    fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(response => {
+            if (!response.ok) throw new Error('Error al cargar la edición');
+            return response.text();
+        })
+        .then(htmlFilaEdicion => {
+            // 'outerHTML' sustituye el <tr> viejo por el nuevo <tr> con inputs/selects
+            fila.outerHTML = htmlFilaEdicion;
+        })
+        .catch(err => console.error(err));
+}
+
+$(document).on('click', '.btnGuardar', function(e) {
+    const id = $(this).data('id');
+    const entidad = $(this).data('entidad');
+    guardarCambios(id, entidad);
+});
+
+function guardarCambios(id, entidad) {
+    const fila = document.querySelector(`tr[data-id="${id}"]`);
+    const contenedorDeEstaTabla = fila.closest('.cajaTabla').parentNode;
+    const inputs = fila.querySelectorAll('.editInput');
+    const datos = new URLSearchParams();
+
+    inputs.forEach(input => {
+        datos.append(input.name, input.value);
+    });
+
+    fetch(`/dnd/guardar/${entidad}/${id}`, {
+        method: 'POST',
+        body: datos,
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+        .then(res => {
+            if(res.ok){
+                const urlListar = `/dnd/listar/${entidad}`;
+                fetch(urlListar, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(r => r.text())
+                .then(html => {
+                    contenedorDeEstaTabla.innerHTML = html;
+                });
+            }
+        });
+}
 
 
