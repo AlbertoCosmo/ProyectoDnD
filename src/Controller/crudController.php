@@ -37,7 +37,7 @@ final class crudController extends AbstractController
                 $relInversas = ['personajes', 'npcs', 'jugadores', 'lugares', 'clases', 'razas', 'capitulos'];
                 if (in_array($campo, $relInversas)) continue;
 
-                $espejo = new \ReflectionMethod($claseCompleta, $m);
+                $espejo = new \ReflectionMethod($clase, $m);
                 $tipoRetorno = (string)$espejo->getReturnType();
                 $tipoVisual = 'text';
                 if (str_contains($tipoRetorno, 'Entity')) {
@@ -60,4 +60,27 @@ final class crudController extends AbstractController
             'nombre_seccion' => $entidad
         ]);
     }
+
+    #[Route('/dnd/editar/{entidad}', name: 'dnd_crud_editar')]
+    public function editarEntidad(string $entidad, Request $request, int $id): Response{
+        $clase = "App\\Entity\\".$entidad;
+        $objeto = $this -> em -> getRepository($clase) -> find($id);
+        $metodos = get_class_methods($clase);
+
+        if(!$objeto){
+            throw $this -> createNotFoundException("No hay registro")
+        }
+        foreach ($metodos as $m){
+            if(str_starts_with($m, 'get') && $m !== 'getId'){
+                $atributo = lcfirst(substr($m, 3));
+                
+                //FILTRO TEMPORAL PARA ANIDADAS
+                $relInversas = ['personajes', 'npcs', 'jugadores', 'lugares', 'clases', 'razas', 'capitulos'];
+                if (in_array($campo, $relInversas)) continue;
+
+                $espejo = new \ReflectionMethod($clase, $m);
+                $tipoRetorno = (string)$espejo->getReturnType();
+        }
+    }
+
 }
