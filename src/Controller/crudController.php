@@ -3,15 +3,6 @@
 namespace App\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
-use App\Repository\ClaseRepository;
-use App\Repository\JugadorRepository;
-use App\Repository\LugaresRepository;
-use App\Repository\PersonajeRepository;
-use App\Repository\RazaRepository;
-use App\Repository\CapitulosRepository;
-use App\Repository\NpcRepository;
-use App\Entity\Npc;
-use App\Form\NpcType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -95,8 +86,6 @@ final class crudController extends AbstractController
                     if (str_contains($tipoRetorno, 'Entity')) {
                         $config['tipo'] = 'select';
                         $claseRelacionada = str_replace(['?', 'Proxies\__CG__\\'], '', $tipoRetorno);
-
-                        dd($tipoRetorno);
                         $config['opciones'] = $this->em->getRepository($claseRelacionada)->findAll();
                     } elseif ($tipoRetorno === 'bool') {
                         $config['tipo'] = 'bool';
