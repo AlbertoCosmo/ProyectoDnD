@@ -77,7 +77,7 @@ $(document).on('click', '#btnVistaMosaico', function () {
     $('#btnVistaTabla').removeClass('active');
 });
 
-//Listar (Usando fetch)
+//LISTAR (Usando fetch)
 document.addEventListener('change', function (e) {
     if (e.target && e.target.id === 'selectorListar') {
         const clase = e.target.value;
@@ -155,5 +155,58 @@ function guardarCambios(id, entidad) {
             }
         });
 }
+
+//PAGINACIÓN TABLAS
+$(document).on('click', '.btnPag', function (e) {
+    e.preventDefault();
+    const paginaDestino = $(this).data('pagina');
+    const textoBusqueda = $('#busquedaTabla').val();
+    const entidadActual = $('.btnMod').first().data('entidad');
+
+    const url = `/dnd/listar/${entidadActual}?page=${paginaDestino}&q=${encodeURIComponent(textoBusqueda)}`;
+
+    actualizarTabla(url);
+});
+
+function actualizarTabla(url) {
+    const $contenedor = $('.contenidoPrincipal');
+
+    $.ajax({
+        url: url,
+        method: 'GET',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        success: function (htmlRecibido) {
+            $contenedor.html(htmlRecibido);
+            window.history.pushState({}, '', url);
+        },
+        error: function (xhr) {
+            console.error("Error al paginar:", xhr.statusText);
+        }
+    });
+}
+
+let debounceTimer;
+
+// Mostrar/Ocultar controles
+$(document).on('click', '#btnAbrirFiltro', function() {
+    $('#controlesFiltro').fadeToggle(200);
+});
+
+// Evento al escribir o cambiar el select
+$(document).on('keyup change', '#busquedaTabla, #filtroCampo', function() {
+    clearTimeout(debounceTimer);
+    
+    debounceTimer = setTimeout(() => {
+        const texto = $('#busquedaTabla').val();
+        const campo = $('#filtroCampo').val();
+        const entidad = $('.btnMod').first().data('entidad');
+
+        // Construimos la URL con el nuevo parámetro 'campo'
+        const url = `/dnd/listar/${entidad}?page=1&q=${encodeURIComponent(texto)}&campo=${campo}`;
+        
+        actualizarTabla(url);
+    }, 300); // 300ms de espera
+});
+
 
 

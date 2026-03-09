@@ -21,42 +21,74 @@ final class crudController extends AbstractController
         $clase = "App\\Entity\\" . $entidad;
         $metodos = get_class_methods($clase);
         $arrayAtributos = [];
+        $nombresCamposDeTexto = [];
 
-        //Variables para paginación
+        // PARAMETROS PAGINACIÓN Y FILTRO
         $pagina = $request->query->getInt('page', 1);
         $limitePag = 10;
         $busqueda = $request->query->get('q', '');
+        $campoFiltro = $request->query->get('campo', '');
 
+        // REFLECTION
         foreach ($metodos as $m) {
             if (str_starts_with($m, 'get') && $m !== 'getId') {
                 $atributo = lcfirst(substr($m, 3));
 
-                //FILTRO TEMPORAL PARA ANIDADAS
                 $relInversas = ['personajes', 'npcs', 'jugadores', 'lugares', 'clases', 'razas', 'capitulos'];
                 if (in_array($atributo, $relInversas)) continue;
 
                 $espejo = new \ReflectionMethod($clase, $m);
                 $tipoRetorno = (string)$espejo->getReturnType();
                 $tipoVisual = 'text';
+
                 if (str_contains($tipoRetorno, 'Entity')) {
-                    $tipoVisual = 'relacion'; //Detectar si es un objeto lo que nos devuelve
+                    $tipoVisual = 'relacion';
                 } elseif ($tipoRetorno === 'bool' || $tipoRetorno === 'boolean') {
                     $tipoVisual = 'bool';
                 }
 
-                $arrayAtributos[] = [
+                $datosAtributo = [
                     'attr' => $atributo,
                     'etiqueta' => strtoupper($atributo),
                     'tipo' => $tipoVisual
                 ];
+
+                $arrayAtributos[] = $datosAtributo;
+
+                if ($tipoVisual === 'text') {
+                    $nombresCamposDeTexto[] = $atributo;
+                }
             }
         }
-        $repo = $this->em->getRepository($clase);
 
-        //Paginador de Doctrine
-        $paginador = $repo->buscarPaginado($busqueda, $arrayAtributos, $pagina, $limitePag);
+        // LÓGICA DE FILTRADO
+        $opcionesRelacion = [];
+        $camposFinales = $nombresCamposDeTexto;
+
+        if (!empty($campoFiltro)) {
+            $camposFinales = [$campoFiltro];
+            foreach ($arrayAtributos as $attr) {
+                if ($attr['attr'] === $campoFiltro && $attr['tipo'] === 'relacion') {
+                    $metodo = 'get' . ucfirst($campoFiltro);
+                    $espejo = new \ReflectionMethod($clase, $metodo);
+                    $tipoRetorno = (string)$espejo->getReturnType();
+                    $claseRelacionada = str_replace(['?', 'Proxies\__CG__\\'], '', $tipoRetorno);
+                    if (class_exists($claseRelacionada)) {
+                        $opcionesRelacion = $this->em->getRepository($claseRelacionada)->findAll();
+                    }
+                    break;
+                }
+            }
+        } 
+        if (!empty($camposFinales)) {
+            $busqueda = '';
+        }
+        
+        $repo = $this->em->getRepository($clase);
+        $paginador = $repo->buscarPaginado($busqueda, $camposFinales, $pagina, $limitePag);
+
         $totalRegistros = count($paginador);
-        $totalPaginas = ceil($totalRegistros / $limitePag);
+        $totalPaginas = max(1, ceil($totalRegistros / $limitePag));
 
         return $this->render('dnd/plantillas/plantillaTablas.html.twig', [
             'datos' => $paginador,
@@ -65,8 +97,11 @@ final class crudController extends AbstractController
             'pagina_actual' => $pagina,
             'total_paginas' => $totalPaginas,
             'busqueda' => $busqueda,
+            'campo_actual' => $campoFiltro,
+            'opciones_relacion' => $opcionesRelacion
         ]);
     }
+
 
     #[Route('/dnd/editar/{entidad}/{id}', name: 'dnd_crud_editar')]
     public function editarEntidad(string $entidad, int $id, Request $request): Response

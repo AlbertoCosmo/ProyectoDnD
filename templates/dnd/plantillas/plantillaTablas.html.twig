@@ -6,8 +6,35 @@
         <div class="accionesDerechaTabla">
             {% block buscador_tabla %}
             <div class=" filtroTabla">
-                <span class="lupaFiltro">🔍</span>
-                <input id="busquedaTabla" type="text" class="busquedaTabla" placeholder="Buscar..." autocomplete="off">
+                <button id="btnAbrirFiltro" class="btnFiltro">🔍</button>
+                <div id="controlesFiltro">
+                    {# SELECT 1 / ELEGIR COLUMNA #}
+                    <select id="filtroCampo">
+                        <option value="">-- Buscar en todo --</option>
+                        {% for a in atributos %}
+                        <option value="{{ a.attr }}" {{ campo_actual==a.attr ? 'selected' : '' }}>
+                            {{ a.etiqueta }}
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                    {# SELECT 2 / INPUT O SELECT #}
+                    <div id="valorFiltroContenedor">
+                        {% if opciones_relacion is not empty %}
+                        <select id="busquedaTabla">
+                            <option value="">Cualquiera...</option>
+                            {% for opc in opciones_relacion %}
+                            <option value="{{ opc.id }}" {{ busqueda==opc.id ? 'selected' : '' }}>
+                                {{ opc.nombre|default(opc.id) }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        {% else %}
+                        <input type="text" id="busquedaTabla" placeholder="Escribe para buscar..."
+                            value="{{ busqueda }}" autocomplete="off">
+                        {% endif %}
+                    </div>
+                </div>
             </div>
             {% endblock %}
             {% block botones_vistas_tabla %}{% endblock %}
@@ -64,7 +91,8 @@
         <span class="infoPag">
             Página <strong>{{ pagina_actual }}</strong> de {{ total_paginas }}
         </span>
-        <button class="btnPag" data-pagina="{{ pagina_actual + 1 }}" {{ pagina_actual==total_paginas ? 'disabled' : ''}}>
+        <button class="btnPag" data-pagina="{{ pagina_actual + 1 }}" {{ pagina_actual==total_paginas ? 'disabled' : ''
+            }}>
             &gt;
         </button>
         {% endif %}
