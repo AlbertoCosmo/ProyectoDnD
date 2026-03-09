@@ -22,6 +22,11 @@ final class crudController extends AbstractController
         $metodos = get_class_methods($clase);
         $arrayAtributos = [];
 
+        //Variables para paginación
+        $pagina = $request->query->getInt('page', 1);
+        $limitePag = 10;
+        $busqueda = $request->query->get('q', '');
+
         foreach ($metodos as $m) {
             if (str_starts_with($m, 'get') && $m !== 'getId') {
                 $atributo = lcfirst(substr($m, 3));
@@ -47,10 +52,19 @@ final class crudController extends AbstractController
             }
         }
         $repo = $this->em->getRepository($clase);
-        return $this->render('dnd/plantillas/tablaListar.html.twig', [
-            'datos' => $repo->findAll(),
+
+        //Paginador de Doctrine
+        $paginador = $repo->buscarPaginado($busqueda, $arrayAtributos, $pagina, $limitePag);
+        $totalRegistros = count($paginador);
+        $totalPaginas = ceil($totalRegistros / $limitePag);
+
+        return $this->render('dnd/plantillas/plantillaTablas.html.twig', [
+            'datos' => $paginador,
             'atributos' => $arrayAtributos,
-            'nombre_seccion' => $entidad
+            'nombre_seccion' => $entidad,
+            'pagina_actual' => $pagina,
+            'total_paginas' => $totalPaginas,
+            'busqueda' => $busqueda,
         ]);
     }
 

@@ -77,11 +77,11 @@ final class DndController extends AbstractController
         return null;
     }
 
-    //CARGA DE PORTADA
-    #[Route('/dnd/portada', name:'dnd_portada')]
-        public function vistaPortada(): Response{
-            return $this->render('dnd/secciones/portada.html.twig');
-        }
+    //CARGA DE PORTADA (AUN POR HACER)
+    #[Route('/dnd/inicio', name:'dnd_portada')]
+    public function vistaPortada(Request $request): Response{
+        return $this -> render('dnd/secciones/portada.html.twig');
+    }
 
     // CARGA DE LORE (AUN POR AÑADIR)
     #[Route('/dnd/lore', name:'dnd_lore')]

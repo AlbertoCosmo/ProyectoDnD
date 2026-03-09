@@ -20,16 +20,30 @@
             </caption>
             <thead>
                 <tr>
-                    {% block tabla_cabecera %}{% endblock %}
+                    {% for a in atributos %}
+                    <th>{{ a.etiqueta }}</th>
+                    {% endfor %}
+                    {% block cabecera_extra %}{% endblock %}
                     <th style="width: 5%;">EDITAR</th>
                 </tr>
             </thead>
             <tbody>
                 {% for objeto in datos %}
                 <tr>
-                    {% block tabla_filas %}{% endblock %}
+                    {% for a in atributos %}
+                    <td data-tipo="{{ a.tipo }}" data-campo="{{ a.attr }}">
+                        {% set valor = attribute(objeto, a.attr) %}
+                        {% if a.tipo == 'relacion' %} {# SI ES OBJETO: TAL #}
+                        {{ valor.nombre|default(valor.id)|default('Sin asignar') }}
+                        {% elseif a.tipo == 'bool' %} {# SI ES BOOLEANO: CUAL #}
+                        {{ valor ? 'Si' : 'No' }}
+                        {% else %} {# SI NO, SEGUIMOS CON LO DE SIEMPRE #}
+                        {{ valor|default('---') }}
+                        {% endif %}
+                    </td>
+                    {% endfor %}
                     <td>
-                        <a href="#" class="btnMod" data-id="{{ objeto.id }}" title="Editar">
+                        <a href="#" class="btnMod" data-id="{{ objeto.id }}" data-entidad="{{ nombre_seccion }}">
                             ✎
                         </a>
                     </td>
@@ -41,6 +55,19 @@
     <div id="vistaMosaico" style="display: none;">
         {% block vista_mosaico %}{% endblock %}
     </div>
-    {% block bot_extra %}{% endblock %}
+    {% block bot_extra %}
+    <div class="paginacion" id="controlesPaginacion">
+        {% if total_paginas > 1 %}
+        <button class="btnPag" data-pagina="{{ pagina_actual - 1 }}" {{ pagina_actual==1 ? 'disabled' : '' }}>
+            &lt;
+        </button>
+        <span class="infoPag">
+            Página <strong>{{ pagina_actual }}</strong> de {{ total_paginas }}
+        </span>
+        <button class="btnPag" data-pagina="{{ pagina_actual + 1 }}" {{ pagina_actual==total_paginas ? 'disabled' : ''}}>
+            &gt;
+        </button>
+        {% endif %}
+    </div>
+    {% endblock %}
 </div>
-{# esto ya se puede borrar afafgawfwaf #}
