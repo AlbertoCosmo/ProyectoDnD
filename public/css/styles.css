@@ -259,10 +259,13 @@ td{
     align-items: stretch;
     gap: 0;
 }
-.filtroTabla{
+.cajaFiltrosDinamicos{
     position: relative;
     display: flex;
     align-items: center;
+}
+.filtroTabla{
+    
 }
 .filtroTabla input{
     border: none;

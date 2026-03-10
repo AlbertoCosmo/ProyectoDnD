@@ -59,6 +59,16 @@ final class crudController extends AbstractController
             }
         }
 
+        //Mapeo de filtro para usar luego desde fuera, en otro archivo
+        $mapaTipoDato = [];
+        foreach ($arrayAtributos as $a){
+            $mapaTipoDato[$a['attr']] = $a['tipo'];
+        }
+        $filtroRecibido = $request -> query -> all('filtro');
+        $repo = $this->em->getRepository($clase);
+        $qb = $repo->createQueryBuilder('e');
+        $qb = $repo->comprobarFiltro($qb, $filtroRecibido, $mapaTipoDato);
+
         $paginaMostrada = $repo->mostrarPaginaTabla($pagina, $maxDatos);
         $totalRegistros = count($paginaMostrada); //Paginator calcula cuantas entradas hay, para calcular el total de registros con count. Cuenta TODOS los registros, no solo los de la página actual.
         $totalPaginas = max(1, ceil($totalRegistros / $maxDatos));
