@@ -6,34 +6,13 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 
 trait PaginatableRepositoryTrait
 {
-    public function buscarPaginado(string $busqueda, array $campos, int $pagina, int $limite, string $campoEspecifico = ''): Paginator
+    public function mostrarPaginaTabla(int $pagina, int $limite): Paginator
     {
         $qb = $this->createQueryBuilder('e');
+        
+        $qb->setFirstResult(($pagina - 1) * $limite)  //Mates para ver desde donde empieza a leer el controlador de la vista (pag 1 - 1 = 0, *10 = 0 = No se salta nada, y empieza a leer desde el dato 1)
+           ->setMaxResults($limite);
 
-        if (!empty($busqueda) && !empty($campos)) {
-            if (!empty($campoEspecifico)) {
-                if (is_numeric($busqueda)) {
-                    $qb->andWhere("e.$campoEspecifico = :t");
-                } else {
-                    $qb->andWhere("e.$campoEspecifico LIKE :t");
-                }
-            } else {
-                $orX = $qb->expr()->orX();
-                foreach ($campos as $campo) {
-                    $orX->add($qb->expr()->like("e.$campo", ":t"));
-                }
-                $qb->andWhere($orX);
-            }
-            if($orX->count() > 0){
-                $qb->andWhere($orX);
-                $qb->setParamenter('t', '%'.$busqueda.'%');
-            }
-
-            $parametro = is_numeric($busqueda) ? $busqueda : '%' . $busqueda . '%';
-            $qb->setParameter('t', $parametro);
-        }
-
-        $qb->setFirstResult(($pagina - 1) * $limite)->setMaxResults($limite);
         return new Paginator($qb);
     }
 }

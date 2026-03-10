@@ -260,14 +260,9 @@ td{
     gap: 0;
 }
 .filtroTabla{
-    background-color: white;
     position: relative;
     display: flex;
     align-items: center;
-    transition: border-color 0.3s;
-    border: solid #000 1px;
-    border-bottom: none;
-    padding: 0 10px;
 }
 .filtroTabla input{
     border: none;
@@ -286,7 +281,6 @@ td{
     background-color: #ffcf4d; 
     color: #000;
     border: 1px solid #000;
-    border-bottom: none;
     padding: 0 15px;
     cursor: pointer;
     transition: all 0.2s ease;

@@ -20,16 +20,14 @@ final class crudController extends AbstractController
     {
         $clase = "App\\Entity\\" . $entidad;
         $metodos = get_class_methods($clase);
-        $arrayAtributos = [];
-        $nombresCamposDeTexto = [];
+        $repo = $this->em->getRepository($clase); 
+        $vistaTabla = $request->query->get('vista', 'tabla');
+    
+        $pagina = $request->query->getInt('page', 1); //Página actual
+        $maxDatos = ($vistaTabla === 'mosaico') ? 30 : 10; //Datos por página
+        
 
-        // PARAMETROS PAGINACIÓN Y FILTRO
-        $pagina = $request->query->getInt('page', 1);
-        $limitePag = 10;
-        $busqueda = $request->query->get('q', '');
-        $campoFiltro = $request->query->get('campo', '');
-
-        // REFLECTION
+        // REFLECTION PARA COMPROBAR SI ES UN OBJETO O UN DATO
         foreach ($metodos as $m) {
             if (str_starts_with($m, 'get') && $m !== 'getId') {
                 $atributo = lcfirst(substr($m, 3));
@@ -61,44 +59,17 @@ final class crudController extends AbstractController
             }
         }
 
-        // LÓGICA DE FILTRADO
-        $opcionesRelacion = [];
-        $camposFinales = $nombresCamposDeTexto;
-
-        if (!empty($campoFiltro)) {
-            $camposFinales = [$campoFiltro];
-            foreach ($arrayAtributos as $attr) {
-                if ($attr['attr'] === $campoFiltro && $attr['tipo'] === 'relacion') {
-                    $metodo = 'get' . ucfirst($campoFiltro);
-                    $espejo = new \ReflectionMethod($clase, $metodo);
-                    $tipoRetorno = (string)$espejo->getReturnType();
-                    $claseRelacionada = str_replace(['?', 'Proxies\__CG__\\'], '', $tipoRetorno);
-                    if (class_exists($claseRelacionada)) {
-                        $opcionesRelacion = $this->em->getRepository($claseRelacionada)->findAll();
-                    }
-                    break;
-                }
-            }
-        } 
-        if (!empty($camposFinales)) {
-            $busqueda = '';
-        }
-        
-        $repo = $this->em->getRepository($clase);
-        $paginador = $repo->buscarPaginado($busqueda, $camposFinales, $pagina, $limitePag);
-
-        $totalRegistros = count($paginador);
-        $totalPaginas = max(1, ceil($totalRegistros / $limitePag));
+        $paginaMostrada = $repo->mostrarPaginaTabla($pagina, $maxDatos);
+        $totalRegistros = count($paginaMostrada); //Paginator calcula cuantas entradas hay, para calcular el total de registros con count. Cuenta TODOS los registros, no solo los de la página actual.
+        $totalPaginas = max(1, ceil($totalRegistros / $maxDatos));
 
         return $this->render('dnd/plantillas/plantillaTablas.html.twig', [
-            'datos' => $paginador,
+            'datos' => $paginaMostrada,
             'atributos' => $arrayAtributos,
             'nombre_seccion' => $entidad,
             'pagina_actual' => $pagina,
             'total_paginas' => $totalPaginas,
-            'busqueda' => $busqueda,
-            'campo_actual' => $campoFiltro,
-            'opciones_relacion' => $opcionesRelacion
+            'vista_actual' => $vistaTabla
         ]);
     }
 

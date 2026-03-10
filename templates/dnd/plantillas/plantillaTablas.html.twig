@@ -6,41 +6,15 @@
         <div class="accionesDerechaTabla">
             {% block buscador_tabla %}
             <div class=" filtroTabla">
-                <button id="btnAbrirFiltro" class="btnFiltro">🔍</button>
-                <div id="controlesFiltro">
-                    {# SELECT 1 / ELEGIR COLUMNA #}
-                    <select id="filtroCampo">
-                        <option value="">-- Buscar en todo --</option>
-                        {% for a in atributos %}
-                        <option value="{{ a.attr }}" {{ campo_actual==a.attr ? 'selected' : '' }}>
-                            {{ a.etiqueta }}
-                        </option>
-                        {% endfor %}
-                    </select>
-
-                    {# SELECT 2 / INPUT O SELECT #}
-                    <div id="valorFiltroContenedor">
-                        {% if opciones_relacion is not empty %}
-                        <select id="busquedaTabla">
-                            <option value="">Cualquiera...</option>
-                            {% for opc in opciones_relacion %}
-                            <option value="{{ opc.id }}" {{ busqueda==opc.id ? 'selected' : '' }}>
-                                {{ opc.nombre|default(opc.id) }}
-                            </option>
-                            {% endfor %}
-                        </select>
-                        {% else %}
-                        <input type="text" id="busquedaTabla" placeholder="Escribe para buscar..."
-                            value="{{ busqueda }}" autocomplete="off">
-                        {% endif %}
-                    </div>
-                </div>
+                {% include "dnd/plantillas/_filtrosDinamicos.twig" %}
             </div>
             {% endblock %}
-            {% block botones_vistas_tabla %}{% endblock %}
+            {% block botones_vistas_tabla %}
+            {% include "dnd/plantillas/_botonesVistaTablas.html.twig" %}
+            {% endblock %}
         </div>
     </div>
-    <div id="vistaTabla">
+    <div id="vistaTabla" {% if vista_actual == 'mosaico' %}style="display: none;"{% endif %}>
         <table>
             <caption class="tablaTitulo">
                 {% block tabla_titulo %}Título Placeholder{% endblock %}
@@ -79,8 +53,26 @@
             </tbody>
         </table>
     </div>
-    <div id="vistaMosaico" style="display: none;">
-        {% block vista_mosaico %}{% endblock %}
+    <div id="vistaMosaico" {% if vista_actual != 'mosaico' %}style="display: none;"{% endif %}>
+        {% block vista_mosaico %}
+        {% set carpeta = nombre_seccion|lower %}
+        <h2 class="tituloMosaico">{{ nombre_seccion|upper }}</h2>
+        <div class="gridMosaico">
+            {% for objeto in datos %}
+            <div class="token" data-id="{{ objeto.id }}">
+                {% set ruta_token = objeto.token
+                ? 'images/' ~ carpeta ~ '/tokens/' ~ objeto.token
+                : 'images/' ~ carpeta ~ '/tokens/Default.png'
+                %}
+                <img src="{{ asset(ruta_token) }}" alt="{{ objeto.nombre|default('Token') }}">
+                <div class="infoToken">
+                    <strong>{{ objeto.nombre|default('Sin nombre') }}</strong>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endblock %}
+
     </div>
     {% block bot_extra %}
     <div class="paginacion" id="controlesPaginacion">
