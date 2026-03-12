@@ -5,72 +5,74 @@
         </div>
         <div class="accionesDerechaTabla">
             {% block buscador_tabla %}
-                {% include "dnd/plantillas/_filtrosDinamicos.twig" %}
+            {% include "dnd/plantillas/_filtrosDinamicos.html.twig" %}
             {% endblock %}
             {% block botones_vistas_tabla %}
             {% include "dnd/plantillas/_botonesVistaTablas.html.twig" %}
             {% endblock %}
         </div>
     </div>
-    <div id="vistaTabla" {% if vista_actual == 'mosaico' %}style="display: none;"{% endif %}>
-        <table>
-            <caption class="tablaTitulo">
-                {% block tabla_titulo %}Título Placeholder{% endblock %}
-            </caption>
-            <thead>
-                <tr>
-                    {% for a in atributos %}
-                    <th>{{ a.etiqueta }}</th>
+    <div id="vistaTotal" class="vistaTotal">
+        <div id="vistaTabla" {% if vista_actual=='mosaico' %}style="display: none;" {% endif %}>
+            <table>
+                <caption class="tablaTitulo">
+                    {% block tabla_titulo %}Título Placeholder{% endblock %}
+                </caption>
+                <thead>
+                    <tr>
+                        {% for a in atributos %}
+                        <th>{{ a.etiqueta }}</th>
+                        {% endfor %}
+                        {% block cabecera_extra %}{% endblock %}
+                        <th style="width: 5%;">EDITAR</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for objeto in datos %}
+                    <tr>
+                        {% for a in atributos %}
+                        <td data-tipo="{{ a.tipo }}" data-campo="{{ a.attr }}">
+                            {% set valor = attribute(objeto, a.attr) %}
+                            {% if a.tipo == 'relacion' %} {# SI ES OBJETO: TAL #}
+                            {{ valor.nombre|default(valor.id)|default('Sin asignar') }}
+                            {% elseif a.tipo == 'bool' %} {# SI ES BOOLEANO: CUAL #}
+                            {{ valor ? 'Si' : 'No' }}
+                            {% else %} {# SI NO, SEGUIMOS CON LO DE SIEMPRE #}
+                            {{ valor|default('---') }}
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                        <td>
+                            <a href="#" class="btnMod" data-id="{{ objeto.id }}" data-entidad="{{ nombre_seccion }}">
+                                ✎
+                            </a>
+                        </td>
+                    </tr>
                     {% endfor %}
-                    {% block cabecera_extra %}{% endblock %}
-                    <th style="width: 5%;">EDITAR</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for objeto in datos %}
-                <tr>
-                    {% for a in atributos %}
-                    <td data-tipo="{{ a.tipo }}" data-campo="{{ a.attr }}">
-                        {% set valor = attribute(objeto, a.attr) %}
-                        {% if a.tipo == 'relacion' %} {# SI ES OBJETO: TAL #}
-                        {{ valor.nombre|default(valor.id)|default('Sin asignar') }}
-                        {% elseif a.tipo == 'bool' %} {# SI ES BOOLEANO: CUAL #}
-                        {{ valor ? 'Si' : 'No' }}
-                        {% else %} {# SI NO, SEGUIMOS CON LO DE SIEMPRE #}
-                        {{ valor|default('---') }}
-                        {% endif %}
-                    </td>
-                    {% endfor %}
-                    <td>
-                        <a href="#" class="btnMod" data-id="{{ objeto.id }}" data-entidad="{{ nombre_seccion }}">
-                            ✎
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <div id="vistaMosaico" {% if vista_actual != 'mosaico' %}style="display: none;"{% endif %}>
-        {% block vista_mosaico %}
-        {% set carpeta = nombre_seccion|lower %}
-        <h2 class="tituloMosaico">{{ nombre_seccion|upper }}</h2>
-        <div class="gridMosaico">
-            {% for objeto in datos %}
-            <div class="token" data-id="{{ objeto.id }}">
-                {% set ruta_token = objeto.token
-                ? 'images/' ~ carpeta ~ '/tokens/' ~ objeto.token
-                : 'images/' ~ carpeta ~ '/tokens/Default.png'
-                %}
-                <img src="{{ asset(ruta_token) }}" alt="{{ objeto.nombre|default('Token') }}">
-                <div class="infoToken">
-                    <strong>{{ objeto.nombre|default('Sin nombre') }}</strong>
-                </div>
-            </div>
-            {% endfor %}
+                </tbody>
+            </table>
         </div>
-        {% endblock %}
+        <div id="vistaMosaico" {% if vista_actual !='mosaico' %}style="display: none;" {% endif %}>
+            {% block vista_mosaico %}
+            {% set carpeta = nombre_seccion|lower %}
+            <h2 class="tituloMosaico">{{ nombre_seccion|upper }}</h2>
+            <div class="gridMosaico">
+                {% for objeto in datos %}
+                <div class="token" data-id="{{ objeto.id }}">
+                    {% set ruta_token = objeto.token
+                    ? 'images/' ~ carpeta ~ '/tokens/' ~ objeto.token
+                    : 'images/' ~ carpeta ~ '/tokens/Default.png'
+                    %}
+                    <img src="{{ asset(ruta_token) }}" alt="{{ objeto.nombre|default('Token') }}">
+                    <div class="infoToken">
+                        <strong>{{ objeto.nombre|default('Sin nombre') }}</strong>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endblock %}
 
+        </div>
     </div>
     {% block bot_extra %}
     <div class="paginacion" id="controlesPaginacion">

@@ -19,59 +19,56 @@ final class crudController extends AbstractController
     public function listarEntidad(string $entidad, Request $request): Response
     {
         $clase = "App\\Entity\\" . $entidad;
-        $metodos = get_class_methods($clase);
-        $repo = $this->em->getRepository($clase); 
+        $repo = $this->em->getRepository($clase);
         $vistaTabla = $request->query->get('vista', 'tabla');
-    
-        $pagina = $request->query->getInt('page', 1); //Página actual
-        $maxDatos = ($vistaTabla === 'mosaico') ? 30 : 10; //Datos por página
-        
+        $pagina = $request->query->getInt('page', 1);
+        $maxDatos = ($vistaTabla === 'mosaico') ? 30 : 10;
 
-        // REFLECTION PARA COMPROBAR SI ES UN OBJETO O UN DATO
-        foreach ($metodos as $m) {
+        // 1. Extraer Atributos mediante Reflection
+        $arrayAtributos = [];
+        $mapaTipoDato = [];
+        $relInversas = ['personajes', 'npcs', 'jugadores', 'lugares', 'clases', 'razas', 'capitulos'];
+
+        foreach (get_class_methods($clase) as $m) {
             if (str_starts_with($m, 'get') && $m !== 'getId') {
-                $atributo = lcfirst(substr($m, 3));
-
-                $relInversas = ['personajes', 'npcs', 'jugadores', 'lugares', 'clases', 'razas', 'capitulos'];
+                $atributo = substr($m, 3);
                 if (in_array($atributo, $relInversas)) continue;
 
-                $espejo = new \ReflectionMethod($clase, $m);
-                $tipoRetorno = (string)$espejo->getReturnType();
-                $tipoVisual = 'text';
+                try {
+                    $espejo = new \ReflectionMethod($clase, $m);
+                    $tipoRetorno = (string)$espejo->getReturnType();
+                    $tipoVisual = 'text';
 
-                if (str_contains($tipoRetorno, 'Entity')) {
-                    $tipoVisual = 'relacion';
-                } elseif ($tipoRetorno === 'bool' || $tipoRetorno === 'boolean') {
-                    $tipoVisual = 'bool';
-                }
+                    if (str_contains($tipoRetorno, 'Entity')) $tipoVisual = 'relacion';
+                    elseif (in_array($tipoRetorno, ['bool', 'boolean'])) $tipoVisual = 'bool';
 
-                $datosAtributo = [
-                    'attr' => $atributo,
-                    'etiqueta' => strtoupper($atributo),
-                    'tipo' => $tipoVisual
-                ];
-
-                $arrayAtributos[] = $datosAtributo;
-
-                if ($tipoVisual === 'text') {
-                    $nombresCamposDeTexto[] = $atributo;
+                    $arrayAtributos[] = ['attr' => $atributo, 'etiqueta' => strtoupper($atributo), 'tipo' => $tipoVisual];
+                    $mapaTipoDato[$atributo] = $tipoVisual;
+                } catch (\Exception $e) {
+                    continue;
                 }
             }
         }
 
-        //Mapeo de filtro para usar luego desde fuera, en otro archivo
-        $mapaTipoDato = [];
-        foreach ($arrayAtributos as $a){
-            $mapaTipoDato[$a['attr']] = $a['tipo'];
+        // 2. Obtener OPCIONES para todos los selects de relación
+        $opcionesRelacion = [];
+        foreach ($arrayAtributos as $a) {
+            if ($a['tipo'] === 'relacion') {
+                $metodo = 'get' . ucfirst($a['attr']);
+                $claseRel = str_replace(['?', 'Proxies\__CG__\\'], '', (string)(new \ReflectionMethod($clase, $metodo))->getReturnType());
+                if (class_exists($claseRel)) {
+                    $opcionesRelacion[$a['attr']] = $this->em->getRepository($claseRel)->findAll();
+                }
+            }
         }
-        $filtroRecibido = $request -> query -> all('filtro');
-        $repo = $this->em->getRepository($clase);
+
+        // 3. Filtrado y Paginación
+        $filtroRecibido = $request->query->all('filtro') ?: [];
         $qb = $repo->createQueryBuilder('e');
         $qb = $repo->comprobarFiltro($qb, $filtroRecibido, $mapaTipoDato);
 
-        $paginaMostrada = $repo->mostrarPaginaTabla($pagina, $maxDatos);
-        $totalRegistros = count($paginaMostrada); //Paginator calcula cuantas entradas hay, para calcular el total de registros con count. Cuenta TODOS los registros, no solo los de la página actual.
-        $totalPaginas = max(1, ceil($totalRegistros / $maxDatos));
+        $paginaMostrada = $repo->mostrarPaginaTabla($pagina, $maxDatos, $qb);
+        $totalPaginas = max(1, ceil(count($paginaMostrada) / $maxDatos));
 
         return $this->render('dnd/plantillas/plantillaTablas.html.twig', [
             'datos' => $paginaMostrada,
@@ -79,10 +76,12 @@ final class crudController extends AbstractController
             'nombre_seccion' => $entidad,
             'pagina_actual' => $pagina,
             'total_paginas' => $totalPaginas,
-            'vista_actual' => $vistaTabla
+            'vista_actual' => $vistaTabla,
+            'filtros_activos' => $filtroRecibido,
+            'opciones_relacion' => $opcionesRelacion,
+            'filtros_abiertos' => !empty($filtroRecibido)
         ]);
     }
-
 
     #[Route('/dnd/editar/{entidad}/{id}', name: 'dnd_crud_editar')]
     public function editarEntidad(string $entidad, int $id, Request $request): Response
@@ -168,4 +167,22 @@ final class crudController extends AbstractController
         $this->em->flush();
         return new Response("OK");
     }
+
+    private function obtenerOpcionesFiltro(string $clasePrincipal, array $atributos): array {
+    $opcionesParaSelect = [];
+    foreach($atributos as $a) {
+        if($a['tipo'] === 'relacion') {
+            $metodo = 'get' . ucfirst($a['attr']);
+            if (!method_exists($clasePrincipal, $metodo)) continue;
+            $espejo = new \ReflectionMethod($clasePrincipal, $metodo);
+            $tipoRetorno = (string)$espejo->getReturnType();
+            $claseRelacionada = str_replace(['?', 'Proxies\__CG__\\'], '', $tipoRetorno);
+            if(!empty($claseRelacionada) && class_exists($claseRelacionada)) {
+                $opcionesParaSelect[$a['attr']] = $this->em->getRepository($claseRelacionada)->findAll();
+            }
+        }
+    }
+    return $opcionesParaSelect;
+}
+
 }

@@ -1,26 +1,26 @@
 <?php
 
+namespace App\Repository;
+
 use Doctrine\ORM\QueryBuilder;
 
-trait FilterableRepositoryTrait
+trait FilterTrait
 {
-    public function comprobarFiltro(QueryBuilder $qb, array $filtros, array $mapaTipos): QueryBuilder{
-        if(empty($filtros)){
-            return $qb;
-        }
-        foreach($filtros as $campo => $valor){
-            $nombreAtributo = 'atr_'.str_replace('.','_',$campo);
-            $tipo = $mapaTipos[$campo] ?? 'text';
-            if($valor === null || $valor === ''){ //Si es null o vacio, skipeamos
+    public function comprobarFiltro(QueryBuilder $qb, array $filtros, array $mapaTipos): QueryBuilder
+    {
+        foreach ($filtros as $campo => $valor) {
+            if ($valor === null || $valor === '' || $valor === 'undefined') {
                 continue;
             }
-            if($tipo === 'relacion' || $tipo === 'bool'){
-                $qb->andWhere("e.$campo = :$nombreAtributo")->setParameter($nombreAtributo, $valor);
-            }
-            else{
-                $qb->andWhere("e.$campo LIKE :$nombreAtributo")->setParameter($nombreAtributo, '%' .$valor.'%');
-            }
 
+            $nombreParam = 'p_' . str_replace('.', '_', $campo);
+            $tipo = $mapaTipos[$campo] ?? 'text';
+
+            if ($tipo === 'relacion' || $tipo === 'bool') {
+                $qb->andWhere("e.$campo = :$nombreParam")->setParameter($nombreParam, $valor);
+            } else {
+                $qb->andWhere("e.$campo LIKE :$nombreParam")->setParameter($nombreParam, "%$valor%");
+            }
         }
         return $qb;
     }

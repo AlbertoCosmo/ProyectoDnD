@@ -264,9 +264,6 @@ td{
     display: flex;
     align-items: center;
 }
-.filtroTabla{
-    
-}
 .filtroTabla input{
     border: none;
     padding: 8px 5px;

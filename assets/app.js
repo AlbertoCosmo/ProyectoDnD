@@ -41,13 +41,14 @@ $(document).on('click', '.bannerMenu a', function (e) {
 
 //ACTUALIZAR TABLA
 function actualizarTabla(url) {
-    const $contenedor = $('.contenidoPrincipal');
+    const $contenedor = $('.vistaTotal');
     $.ajax({
         url: url,
         method: 'GET',
         headers: { 'X-Requested-With': 'XMLHttpRequest' },
         success: function (htmlRecibido) {
-            $contenedor.html(htmlRecibido);
+            const nuevoContenido = $(htmlRecibido).find('#vistaTotal')
+            $contenedor.html(nuevoContenido);
             window.history.pushState({}, '', url);
         },
         error: function (xhr) {
@@ -59,13 +60,13 @@ function actualizarTabla(url) {
 // VISTA DE TABLA Y MOSAICO
 $(document).on('click', '.btnToggleVistas', function () {
     const vistaSeleccionada = $(this).data('vista'); //Vista es la vista elegida entre tabla o mosaico
-    const entidad = $('.btnMod').first().data('entidad') || '{{ nombre_seccion }}'; 
-    
+    const entidad = $('.btnMod').first().data('entidad') || '{{ nombre_seccion }}';
+
     $('.btnToggleVistas').removeClass('active');
     $(this).addClass('active');
     const url = `/dnd/listar/${entidad}?page=1&vista=${vistaSeleccionada}`;
-    
-    actualizarTabla(url); 
+
+    actualizarTabla(url);
 });
 
 //PAGINACIÓN TABLAS
@@ -77,6 +78,62 @@ $(document).on('click', '.btnPag', function (e) {
     const url = `/dnd/listar/${entidadActual}?page=${paginaDestino}&vista=${vistaActiva}`;
 
     actualizarTabla(url);
+});
+
+// ABRIR/CERRAR LUPA
+$(document).on('click', '#btnAbrirFiltros', function(e) {
+    e.preventDefault();
+    $('#checkboxFiltros').stop().fadeToggle(300);
+});
+
+//ABRIR FILTRO TABLA
+$(document).on('change', '.selectorFiltro', function() {
+    const targetId = $(this).data('target');
+    const $inputContenedor = $('#' + targetId);
+    
+    if ($(this).is(':checked')) {
+        $inputContenedor.removeClass('hidden');
+    } else {
+        $inputContenedor.addClass('hidden');
+        $inputContenedor.find('.inputFiltroDinamico').val(''); 
+        ejecutarFiltro();
+    }
+});
+
+//FILTRO TABLAS CHECKBOX
+    $(document).on('change', '.checkboxIndividual', function () {
+    const attr = $(this).data('attr');
+    
+    if ($(this).is(':checked')) {
+        const campoClonado = $(`#plantilla-${attr}`).clone().attr('id', `grupo-${attr}`);
+        $('#camposBusqueda').append(campoClonado);
+    } else {
+        $(`#grupo-${attr}`).remove();
+    }
+    ejecutarFiltro(); 
+});
+
+//EJECUTAR FILTRO TABLAS
+function ejecutarFiltro() {
+    const entidad = $('.btnMod').first().data('entidad');
+    const vista = $('.btnToggleVistas.active').data('vista') || 'tabla';
+    let filtros = {};
+    $('.inputFiltroDinamico').each(function () {
+        const campo = $(this).attr('name');
+        const valor = $(this).val();
+        if (valor !== "") {
+            filtros[campo] = valor;
+        }
+    });
+    const textoQuery = $.param(filtros);
+    const url = `/dnd/listar/${entidad}?page=1&vista=${vista}&${textoQuery}`;
+    actualizarTabla(url);
+}
+
+//DELAY AL ESCRIBIR Y ACTUALIZAR
+$(document).on('keyup change', '.inputFiltroDinamico', function () {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(ejecutarFiltro, 400);
 });
 
 //LISTAR (Usando fetch)
@@ -99,7 +156,7 @@ document.addEventListener('change', function (e) {
     }
 });
 
-// BOTON DE MODIFICAR DATOS TABLA
+//MODIFICAR DATOS TABLA
 $(document).on('click', '.btnMod', function (e) {
     e.preventDefault();
     const id = $(this).data('id');
@@ -125,7 +182,7 @@ function abrirEdicion(id, entidad) {
         .catch(err => console.error(err));
 }
 
-$(document).on('click', '.btnGuardar', function(e) {
+$(document).on('click', '.btnGuardar', function (e) {
     const id = $(this).data('id');
     const entidad = $(this).data('entidad');
     guardarCambios(id, entidad);
@@ -147,18 +204,16 @@ function guardarCambios(id, entidad) {
         headers: { 'X-Requested-With': 'XMLHttpRequest' }
     })
         .then(res => {
-            if(res.ok){
+            if (res.ok) {
                 const urlListar = `/dnd/listar/${entidad}`;
                 fetch(urlListar, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-                .then(r => r.text())
-                .then(html => {
-                    contenedorDeEstaTabla.innerHTML = html;
-                });
+                    .then(r => r.text())
+                    .then(html => {
+                        contenedorDeEstaTabla.innerHTML = html;
+                    });
             }
         });
 }
-
-
 
 
 

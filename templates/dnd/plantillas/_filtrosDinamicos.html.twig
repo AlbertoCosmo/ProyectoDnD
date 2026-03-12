@@ -1,0 +1,47 @@
+<div class="cajaFiltrosDinamicos">
+    <button id="btnAbrirFiltros" class="btnToggleVistas">🔍</button>
+
+    <div id="checkboxFiltros" class="checkboxFiltros" 
+    {% if filtros_abiertos == false %} style="display: none;" {% endif %}
+        <p><strong>Filtrar por:</strong></p>
+        <div class="contenedorFiltrosFull">
+            {% for a in atributos %}
+                {% set activo = filtros_activos[a.attr] is defined %}
+                <div class="itemFiltro">
+                    <label class="campoCheck">
+                        <input type="checkbox" class="selectorFiltro" data-target="campo-{{ a.attr }}" {{ activo ? 'checked' : '' }}>
+                        {{ a.etiqueta }}
+                    </label>
+
+                    <div id="campo-{{ a.attr }}" class="controlFiltro {{ activo ? '' : 'hidden' }}">
+                        {% if a.tipo == 'relacion' %}
+                            <select class="inputFiltroDinamico" name="filtro[{{ a.attr }}]">
+                                <option value="">Todos...</option>
+                                {% for opt in opciones_relacion[a.attr]|default([]) %}
+                                    <option value="{{ opt.id }}" {{ (filtros_activos[a.attr]|default('') == opt.id) ? 'selected' : '' }}>
+                                        {{ opt.nombre|default(opt.id) }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        {% elseif a.tipo == 'bool' %}
+                            <select class="inputFiltroDinamico" name="filtro[{{ a.attr }}]">
+                                <option value="">Cualquiera</option>
+                                <option value="1" {{ filtros_activos[a.attr]|default('') == '1' ? 'selected' : '' }}>Sí</option>
+                                <option value="0" {{ filtros_activos[a.attr]|default('') == '0' ? 'selected' : '' }}>No</option>
+                            </select>
+                        {% else %}
+                            <input type="text" class="inputFiltroDinamico" name="filtro[{{ a.attr }}]" 
+                                   value="{{ filtros_activos[a.attr]|default('') }}" placeholder="Buscar...">
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .hidden { display: none !important; }
+    .itemFiltro { margin: 5px 0; padding: 5px; border-bottom: 1px solid #ddd; }
+    .controlFiltro { margin-top: 5px; }
+</style>
