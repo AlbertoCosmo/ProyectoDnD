@@ -424,7 +424,7 @@ td{
 .btnCrearNpc2:hover{
     background: #b37e1b;
 }
-.btnCancelarNpc{
+.btnCancelar{
     padding: 10px 20px;
     background-color: #776138;
     border: #000000 solid 2px;
@@ -432,8 +432,10 @@ td{
     font-size: large;
     font-weight: bold;
     cursor: pointer;
+    text-decoration: none;
+    color: #000;
 }
-.btnCancelarNpc:hover{
+.btnCancelar:hover{
     background: #b37e1b;
 }
 .btnMod {

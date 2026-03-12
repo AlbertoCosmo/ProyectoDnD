@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Registro de Aventureros{% endblock %}
+{% block title %}Inicio de sesión{% endblock %}
 
 {% block body %}
     <div class="contenidoNuevoNpc" style="display: block; position: relative;">
-        <h1 class="tituloNuevoNpc">Registro de Nuevos Aventureros</h1>
+        <h1 class="tituloNuevoNpc">Inicio de sesión</h1>
 
-        <form action="{{ path('app_register') }}" method="POST">
+        <form action="{{ path('app_login') }}" method="POST">
             
             <div style="margin-bottom: 20px;">
                 <label style="display: block; font-weight: bold; margin-bottom: 5px;">Nombre de Usuario:</label>
@@ -18,16 +18,8 @@
                 <input type="password" name="_password" class="listarSelect" style="width: 99%;" required>
             </div>
 
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; font-weight: bold; margin-bottom: 5px;">Rango en la partida:</label>
-                <select name="_role" class="listarSelect" style="width: 101%;">
-                    <option value="ROLE_USER">Jugador (Usuario Normal)</option>
-                    <option value="ROLE_ADMIN">Master (Administrador)</option>
-                </select>
-            </div>
-
             <div class="formularioNpcAcciones">
-                <button type="submit" class="btnCrearNpc2">Forjar Identidad</button>
+                <button type="submit" class="btnCrearNpc2">Iniciar Sesión</button>
                 <a href="{{ path('paginaBase') }}" class="btnCancelar">Cancelar</a>
             </div>
         </form>
