@@ -5,8 +5,14 @@
     <div class="bannerIzq"></div>
     <div class="bannerMid">
         <div class="botonesPortada">
-            <a class="btnPortada" href="{{ path('app_register') }}">Crear Usuario</a>
+            {% if app.session.get('user_id') %}
+            <h2 class="h2Portada"> Bienvenido, {{ app.session.get('user_username') }}</h2>
+            <a class="btnPortada" href="{{ path('app_logout') }}">Cerrar sesión</a>
+            {% else %}
+            <h2 class="h2Portada"> ¿Tienes una cuenta? Inicia sesión!</h2>
             <a class="btnPortada" href="{{ path('app_login') }}">Iniciar sesión</a>
+            {% endif %}
+            <a class="btnPortada" href="{{ path('app_register') }}">Crear Usuario</a>
         </div>
     </div>
     <div class="bannerDer"></div>

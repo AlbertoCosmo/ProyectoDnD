@@ -37,8 +37,31 @@ final class LoginController extends AbstractController
     }
 
     #[Route('/login', name:'app_login')]
-    public function login(Request $request, EntityManagerInterface $em): Response{
+    public function login(Request $request, UserRepository $usrRepo, UserPasswordHasherInterface $passwordHasher, SessionInterface $session): Response{
+        if($request->isMethod('POST')){
+            $username = $request->request->get('_username');
+            $password = $request->request->get('_password');
+            $user = $usrRepo->findOneBy(['username' => $username]);
+
+            if($user){
+                if($passwordHasher->isPasswordValid($user, $password)){
+                    $session->set('user_id', $user->getId());
+                    $session->set('user_username', $user->getUsername());
+                    $session->set('user_role', $user->getRoles());
+                    return $this->redirectToRoute('paginaBase');
+                }
+            }
+            $this->addFlash('error','Credenciales incorrectas');
+        }
+
         return $this->render('users/login.html.twig');
+    }
+
+    #[Route('/logout', name:'app_logout')]
+    public function logout(SessionInterface $session): Response{
+        $session->clear();
+        $session->invalidate();
+        return $this->redirectToRoute('app_login');
     }
 
 }

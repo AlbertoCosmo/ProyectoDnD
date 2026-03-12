@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 final class crudController extends AbstractController
 {
@@ -16,8 +17,18 @@ final class crudController extends AbstractController
 
 
     #[Route('/dnd/listar/{entidad}', name: 'dnd_crud_listar')]
-    public function listarEntidad(string $entidad, Request $request): Response
+    public function listarEntidad(string $entidad, Request $request, SessionInterface $session): Response
     {
+        //SEGURIDAD MASTER
+        $accesoRestringido = ['Npc','Lore'];
+        $userRole = $session->get('user_role');
+
+        if(in_array($entidad, $accesoRestringido) && !in_array('ROLE_ADMIN', (array)$userRole)){
+            $this->addFlash('error','No tienes permisos para ver este contenido');
+            return $this->render('dnd/plantillas/_accessDenied.html.twig');
+        }
+
+        //CODIGO CONTROLLER
         $clase = "App\\Entity\\" . $entidad;
         $repo = $this->em->getRepository($clase);
         $vistaTabla = $request->query->get('vista', 'tabla');
@@ -167,23 +178,5 @@ final class crudController extends AbstractController
         $this->em->flush();
         return new Response("OK");
     }
-
-    /*
-    private function obtenerOpcionesFiltro(string $clasePrincipal, array $atributos): array {
-    $opcionesParaSelect = [];
-    foreach($atributos as $a) {
-        if($a['tipo'] === 'relacion') {
-            $metodo = 'get' . ucfirst($a['attr']);
-            if (!method_exists($clasePrincipal, $metodo)) continue;
-            $espejo = new \ReflectionMethod($clasePrincipal, $metodo);
-            $tipoRetorno = (string)$espejo->getReturnType();
-            $claseRelacionada = str_replace(['?', 'Proxies\__CG__\\'], '', $tipoRetorno);
-            if(!empty($claseRelacionada) && class_exists($claseRelacionada)) {
-                $opcionesParaSelect[$a['attr']] = $this->em->getRepository($claseRelacionada)->findAll();
-            }
-        }
-    }
-    return $opcionesParaSelect;
-    }  */
 
 }
