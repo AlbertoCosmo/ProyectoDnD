@@ -1,6 +1,6 @@
 <h1 class="h1Portada">¡ Bienvenid@ a la partida !</h1>
-        <h2 class="h2Portada">Navega por los diferentes apartados o usa estos botones para ver, modificar o eliminar los
-            datos</h2>
+<h2 class="h2Portada">Navega por los diferentes apartados o usa estos botones para ver, modificar o eliminar los
+    datos</h2>
 <div class="espacioPortada">
     <div class="bannerIzq"></div>
     <div class="bannerMid">
@@ -8,11 +8,14 @@
             {% if app.session.get('user_id') %}
             <h2 class="h2Portada"> Bienvenido, {{ app.session.get('user_username') }}</h2>
             <a class="btnPortada" href="{{ path('app_logout') }}">Cerrar sesión</a>
+                {% if 'ROLE_ADMIN' in app.session.get('user_role') %}
+                <a class="btnPortada" href="{{ path('app_register') }}">Crear Usuario</a>
+                {% endif %}
             {% else %}
             <h2 class="h2Portada"> ¿Tienes una cuenta? Inicia sesión!</h2>
             <a class="btnPortada" href="{{ path('app_login') }}">Iniciar sesión</a>
             {% endif %}
-            <a class="btnPortada" href="{{ path('app_register') }}">Crear Usuario</a>
+
         </div>
     </div>
     <div class="bannerDer"></div>
