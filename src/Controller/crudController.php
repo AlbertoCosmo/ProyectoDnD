@@ -168,6 +168,7 @@ final class crudController extends AbstractController
         return new Response("OK");
     }
 
+    /*
     private function obtenerOpcionesFiltro(string $clasePrincipal, array $atributos): array {
     $opcionesParaSelect = [];
     foreach($atributos as $a) {
@@ -183,6 +184,6 @@ final class crudController extends AbstractController
         }
     }
     return $opcionesParaSelect;
-}
+    }  */
 
 }

@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Registro de Usuario{% endblock %}
+
+{% block body %}
+    <h1>Crear nuevo usuario</h1>
+
+    <form action="{{ path('app_register') }}" method="POST">
+        
+        <div>
+            <label for="username">Nombre de usuario:</label>
+            <input type="text" id="username" name="_username" required>
+        </div>
+
+        <br>
+
+        <div>
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" name="_password" required>
+        </div>
+
+        <br>
+
+        <div>
+            <label for="roles">Tipo de usuario (Rol):</label>
+            <select id="roles" name="_roles">
+                <option value="ROLE_USER">Jugador (Usuario Normal)</option>
+                <option value="ROLE_ADMIN">Master (Administrador)</option>
+            </select>
+        </div>
+
+        <hr>
+
+        <button type="submit">Registrar Usuario</button>
+    </form>
+
+    <br>
+    <a href="#">Volver al inicio</a>
+{% endblock %}
