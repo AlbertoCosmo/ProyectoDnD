@@ -19,7 +19,7 @@ class Clases
     private ?string $nombre = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $descripci�on = null;
+    private ?string $descripcion = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $token = null;
@@ -65,12 +65,12 @@ class Clases
 
     public function getDescripci�on(): ?string
     {
-        return $this->descripci�on;
+        return $this->descripcion;
     }
 
-    public function setDescripci�on(?string $descripci�on): static
+    public function setDescripci�on(?string $descripcion): static
     {
-        $this->descripci�on = $descripci�on;
+        $this->descripcion = $descripcion;
 
         return $this;
     }
