@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\RepositoriosPrueba;
 
-use App\Entity\Clase;
+use App\Entity\EntidadesPrueba\Lugares;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use App\Repository\FilterTrait;
+use App\Repository\RepositoriosPruebaFilterTrait;
 
-class ClaseRepository extends ServiceEntityRepository
+class LugaresRepository extends ServiceEntityRepository
 {
     use FilterTrait;
     use PaginatableRepositoryTrait;
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Clase::class);
+        parent::__construct($registry, Lugares::class);
     }
 }

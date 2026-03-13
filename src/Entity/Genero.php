@@ -2,45 +2,35 @@
 
 namespace App\Entity;
 
-use App\Repository\LugaresRepository;
+use App\Repository\GeneroRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: LugaresRepository::class)]
-class Lugares
+#[ORM\Entity(repositoryClass: GeneroRepository::class)]
+class Genero
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 150)]
+    #[ORM\Column(length: 50)]
     private ?string $nombre = null;
-
-    #[ORM\ManyToOne(inversedBy: 'lugares')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Regiones $region = null;
-
-    #[ORM\ManyToOne(inversedBy: 'lugares')]
-    private ?Asentamientos $asentamiento = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $descripcion = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $mapa = null;
-
     /**
      * @var Collection<int, Actor>
      */
-    #[ORM\OneToMany(targetEntity: Actor::class, mappedBy: 'lugar')]
+    #[ORM\OneToMany(targetEntity: Actor::class, mappedBy: 'genero')]
     private Collection $actors;
 
     /**
      * @var Collection<int, ActorProtagonista>
      */
-    #[ORM\OneToMany(targetEntity: ActorProtagonista::class, mappedBy: 'lugar')]
+    #[ORM\OneToMany(targetEntity: ActorProtagonista::class, mappedBy: 'genero', orphanRemoval: true)]
     private Collection $actorProtagonistas;
 
     public function __construct()
@@ -66,30 +56,6 @@ class Lugares
         return $this;
     }
 
-    public function getRegion(): ?Regiones
-    {
-        return $this->region;
-    }
-
-    public function setRegion(?Regiones $region): static
-    {
-        $this->region = $region;
-
-        return $this;
-    }
-
-    public function getAsentamiento(): ?Asentamientos
-    {
-        return $this->asentamiento;
-    }
-
-    public function setAsentamiento(?Asentamientos $asentamiento): static
-    {
-        $this->asentamiento = $asentamiento;
-
-        return $this;
-    }
-
     public function getDescripcion(): ?string
     {
         return $this->descripcion;
@@ -98,18 +64,6 @@ class Lugares
     public function setDescripcion(?string $descripcion): static
     {
         $this->descripcion = $descripcion;
-
-        return $this;
-    }
-
-    public function getMapa(): ?string
-    {
-        return $this->mapa;
-    }
-
-    public function setMapa(?string $mapa): static
-    {
-        $this->mapa = $mapa;
 
         return $this;
     }
@@ -126,7 +80,7 @@ class Lugares
     {
         if (!$this->actorProtagonistas->contains($actorProtagonista)) {
             $this->actorProtagonistas->add($actorProtagonista);
-            $actorProtagonista->setLugar($this);
+            $actorProtagonista->setGenero($this);
         }
 
         return $this;
@@ -136,8 +90,8 @@ class Lugares
     {
         if ($this->actorProtagonistas->removeElement($actorProtagonista)) {
             // set the owning side to null (unless already changed)
-            if ($actorProtagonista->getLugar() === $this) {
-                $actorProtagonista->setLugar(null);
+            if ($actorProtagonista->getGenero() === $this) {
+                $actorProtagonista->setGenero(null);
             }
         }
 

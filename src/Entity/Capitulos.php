@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\CapitulosRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CapitulosRepository::class)]
@@ -17,14 +16,11 @@ class Capitulos
     #[ORM\Column]
     private ?int $numero = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $titulo = null;
+    #[ORM\Column(length: 100)]
+    private ?string $nombre = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $resumen = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $resumenCompleto = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $descripcion = null;
 
     public function getId(): ?int
     {
@@ -43,38 +39,26 @@ class Capitulos
         return $this;
     }
 
-    public function getTitulo(): ?string
+    public function getNombre(): ?string
     {
-        return $this->titulo;
+        return $this->nombre;
     }
 
-    public function setTitulo(string $titulo): static
+    public function setNombre(string $nombre): static
     {
-        $this->titulo = $titulo;
+        $this->nombre = $nombre;
 
         return $this;
     }
 
-    public function getResumen(): ?string
+    public function getDescripcion(): ?string
     {
-        return $this->resumen;
+        return $this->descripcion;
     }
 
-    public function setResumen(?string $resumen): static
+    public function setDescripcion(?string $descripcion): static
     {
-        $this->resumen = $resumen;
-
-        return $this;
-    }
-
-    public function getResumenCompleto(): ?string
-    {
-        return $this->resumenCompleto;
-    }
-
-    public function setResumenCompleto(?string $resumenCompleto): static
-    {
-        $this->resumenCompleto = $resumenCompleto;
+        $this->descripcion = $descripcion;
 
         return $this;
     }

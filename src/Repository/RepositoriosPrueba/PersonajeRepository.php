@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\RepositoriosPrueba;
 
-use App\Entity\Personaje;
+use App\Entity\EntidadesPrueba\Personaje;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use App\Repository\FilterTrait;
+use App\Repository\RepositoriosPrueba\FilterTrait;
 
 class PersonajeRepository extends ServiceEntityRepository
 {

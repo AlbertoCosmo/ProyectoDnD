@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\EntidadesPrueba;
 
 use App\Repository\PersonajeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: PersonajeRepository::class)]
 class Personaje
 {
     #[ORM\Id]

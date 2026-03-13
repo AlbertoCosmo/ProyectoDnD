@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\EntidadesPrueba;
 
 use App\Repository\NpcRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: NpcRepository::class)]
 class Npc
 {
     #[ORM\Id]

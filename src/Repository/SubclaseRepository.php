@@ -2,39 +2,39 @@
 
 namespace App\Repository;
 
-use App\Entity\Lugares;
+use App\Entity\Subclase;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Lugares>
+ * @extends ServiceEntityRepository<Subclase>
  */
-class LugaresRepository extends ServiceEntityRepository
+class SubclaseRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Lugares::class);
+        parent::__construct($registry, Subclase::class);
     }
 
     //    /**
-    //     * @return Lugares[] Returns an array of Lugares objects
+    //     * @return Subclase[] Returns an array of Subclase objects
     //     */
     //    public function findByExampleField($value): array
     //    {
-    //        return $this->createQueryBuilder('l')
-    //            ->andWhere('l.exampleField = :val')
+    //        return $this->createQueryBuilder('s')
+    //            ->andWhere('s.exampleField = :val')
     //            ->setParameter('val', $value)
-    //            ->orderBy('l.id', 'ASC')
+    //            ->orderBy('s.id', 'ASC')
     //            ->setMaxResults(10)
     //            ->getQuery()
     //            ->getResult()
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Lugares
+    //    public function findOneBySomeField($value): ?Subclase
     //    {
-    //        return $this->createQueryBuilder('l')
-    //            ->andWhere('l.exampleField = :val')
+    //        return $this->createQueryBuilder('s')
+    //            ->andWhere('s.exampleField = :val')
     //            ->setParameter('val', $value)
     //            ->getQuery()
     //            ->getOneOrNullResult()

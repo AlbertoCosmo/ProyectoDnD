@@ -1,13 +1,11 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\EntidadesPrueba;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
-
-#[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
