@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ObjetosRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ObjetosRepository::class)]
@@ -30,6 +32,24 @@ class Objetos
 
     #[ORM\Column(nullable: true)]
     private ?bool $unico = null;
+
+    /**
+     * @var Collection<int, Inventarios>
+     */
+    #[ORM\OneToMany(targetEntity: Inventarios::class, mappedBy: 'objeto', orphanRemoval: true)]
+    private Collection $inventarios;
+
+    /**
+     * @var Collection<int, OfertaComercial>
+     */
+    #[ORM\OneToMany(targetEntity: OfertaComercial::class, mappedBy: 'objeto', orphanRemoval: true)]
+    private Collection $ofertaComercials;
+
+    public function __construct()
+    {
+        $this->inventarios = new ArrayCollection();
+        $this->ofertaComercials = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -104,6 +124,66 @@ class Objetos
     public function setUnico(?bool $unico): static
     {
         $this->unico = $unico;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Inventarios>
+     */
+    public function getInventarios(): Collection
+    {
+        return $this->inventarios;
+    }
+
+    public function addInventario(Inventarios $inventario): static
+    {
+        if (!$this->inventarios->contains($inventario)) {
+            $this->inventarios->add($inventario);
+            $inventario->setObjeto($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInventario(Inventarios $inventario): static
+    {
+        if ($this->inventarios->removeElement($inventario)) {
+            // set the owning side to null (unless already changed)
+            if ($inventario->getObjeto() === $this) {
+                $inventario->setObjeto(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, OfertaComercial>
+     */
+    public function getOfertaComercials(): Collection
+    {
+        return $this->ofertaComercials;
+    }
+
+    public function addOfertaComercial(OfertaComercial $ofertaComercial): static
+    {
+        if (!$this->ofertaComercials->contains($ofertaComercial)) {
+            $this->ofertaComercials->add($ofertaComercial);
+            $ofertaComercial->setObjeto($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOfertaComercial(OfertaComercial $ofertaComercial): static
+    {
+        if ($this->ofertaComercials->removeElement($ofertaComercial)) {
+            // set the owning side to null (unless already changed)
+            if ($ofertaComercial->getObjeto() === $this) {
+                $ofertaComercial->setObjeto(null);
+            }
+        }
 
         return $this;
     }
